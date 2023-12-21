@@ -1,5 +1,7 @@
 package UI_B8;
 
+import Validation.ValidationC;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -132,15 +134,21 @@ public class UiB8 {
         }
     }
 
-    private static void addStudentToDB(StudentB8 stud,DefaultTableModel model) throws SQLException{
-        String query = "INSERT INTO Sinhvien(StuId,StuName,Address)" + "VALUES ('"+stud.getStuId() +"','"+stud.getNameStu()+"','"+stud.getAddressStu()+"');";
-        int result = stateMain.executeUpdate(query);
-        if(result == 1){
-            System.out.println("Add successful");
-        }
-        List<Object[]> newList = MStudentB8.addNew(stud);
-        clearTbl(model);
-        renderData(newList,model);
+    private static void addStudentToDB(StudentB8 stud,DefaultTableModel model,JFrame frame){
+       try{
+           String query = "INSERT INTO Sinhvien(StuId,StuName,Address)" + "VALUES ('"+stud.getStuId() +"','"+stud.getNameStu()+"','"+stud.getAddressStu()+"');";
+           int result = stateMain.executeUpdate(query);
+           if(result == 1){
+               System.out.println("Add successful");
+           }
+           List<Object[]> newList = MStudentB8.addNew(stud);
+           clearTbl(model);
+           renderData(newList,model);
+       }catch(SQLException ex){
+           System.out.println(ex);
+           System.out.println("Trung id !!!!!!!");
+           renderopupInvalid("Hay nhap mot ID khac",frame);
+       }
     }
 
     private static void setColorBtnDefault(String btnName){
@@ -263,14 +271,19 @@ public class UiB8 {
                 String id = idInput.getText();
                 String name = nameInput.getText();
                 String address = adressInput.getText();
-                StudentB8 newStu = new StudentB8(id,name,address);
-                try {
-                    addStudentToDB(newStu,model);
+                ValidationC validate = ValidationC.isEmpty(id,name,address);
+                ValidationC validForID = ValidationC.isValidID(id,MStudentB8.getData());
+                System.out.println(validate.isValid() + " "+ validate.getMsg());
+                if(validate.isValid()){
+                    StudentB8 newStu = new StudentB8(id,name,address);
+                    addStudentToDB(newStu,model,frame);
                     cleanInput(idInput,nameInput,adressInput);
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
+                    String msgRender = validForID.getMsg().equalsIgnoreCase("ok!") ? validate.getMsg() : validForID.getMsg();
+                    renderopup(msgRender,frame);
+                }else {
+                    String msgRender = validForID.getMsg().equalsIgnoreCase("ok!") ? validate.getMsg() : validForID.getMsg();
+                    renderopupInvalid(msgRender,frame);
                 }
-
             }
         });
         //DELETE
@@ -416,7 +429,4 @@ public class UiB8 {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        UiB8.runUI();
-    }
 }
