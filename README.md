@@ -1,1 +1,11 @@
-Ngô Minh Đức 23CE1 23CE014
+# Giao diện quản lý sinh viên B8
+
+## Module chính cần chú ý:
+
+- UI_B8
+- Validation
+- Main ( run chương trình )
+
+- ## Authors
+
+- [NgoDuc2505](https://github.com/NgoDuc2505)
