@@ -384,9 +384,14 @@ public class UiB8 {
                     String newName = nameInput.getText();
                     String newAdress = adressInput.getText();
                     StudentB8 currentStudent = new StudentB8(curId,newName,newAdress);
-                    editStuIntoDB(curId,model,currentStudent);
-                    renderopup("Updated !",frame);
-                    listBtn.get(5).doClick();
+                    ValidationC valid = ValidationC.isEmpty(newName,newAdress);
+                    if(valid.isValid()){
+                        editStuIntoDB(curId,model,currentStudent);
+                        renderopup("Updated !",frame);
+                        listBtn.get(5).doClick();
+                    }else{
+                        renderopupInvalid(valid.getMsg(),frame);
+                    }
                 }catch (Exception ex){
                     renderopupInvalid("Can not update !", frame);
                 }

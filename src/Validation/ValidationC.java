@@ -37,6 +37,28 @@ public class ValidationC {
         return new ValidationC(finalMsg,isValid);
     }
 
+    public static ValidationC isEmpty(String name,String address){
+        String msg = "OK!";
+        boolean isValid = true;
+        String[] listVal = {name,address};
+        for (int i = 0; i < listVal.length; i++) {
+            if (listVal[i].isEmpty()){
+                switch (i){
+                    case 0:
+                        msg += " Ten Khong De Trong";
+                        isValid = false;
+                        break;
+                    case 1:
+                        msg += " Dia chi Khong De Trong";
+                        isValid = false;
+                        break;
+                }
+            }
+        }
+        String finalMsg = msg.length() == 3 ? msg : msg.split("!")[1];
+        return new ValidationC(finalMsg,isValid);
+    }
+
     public static ValidationC isValidID(String id, List<Object[]> listUser){
         String msgs = "OK!";
         boolean isValidIDCheck = true;
